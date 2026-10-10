@@ -9,7 +9,7 @@ Banco de dados digital interativo para integrar, organizar, armazenar e consulta
 - Mapa interativo dos 15 municípios de Roraima, com seleção por clique ou por lista.
 - Painel territorial com código IBGE, área, população e densidade demográfica.
 - Card flutuante por espécie, com expansão para a página de detalhe.
-- Abas: Animais peçonhentos, Plantas medicinais, Usos, Conexão e Autoria.
+- Abas: Animais peçonhentos, Plantas medicinais, Fungos, Usos, Conexão e Autoria.
 - Interface responsiva, com navegação por teclado e respeito à preferência de movimento reduzido.
 
 ## Como usar
