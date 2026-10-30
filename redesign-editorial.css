@@ -1,0 +1,45 @@
+/* Bio Dados Amazônia — camada editorial complementar */
+:root{--ink:#17251f;--teal:#173f32;--deep:#102b24;--gold:#b68a4b;--paper:#f5f3ec;--card:#fffefa;--mut:#68766d;--line:#d9ded4;--g:#3e6848;--lime:#dce8c8}
+body{background:var(--paper);color:var(--ink);line-height:1.7}
+.pilot{background:var(--deep);color:var(--lime);font-size:.66rem;letter-spacing:.08em}
+header{background:rgba(249,248,242,.96);border-bottom:1px solid var(--line);box-shadow:0 8px 30px #1a30200a}
+.nav{max-width:1320px;min-height:76px;padding:.65rem 1.5rem}
+.logo{font-family:'Sora',sans-serif;font-size:1rem;letter-spacing:-.04em}
+nav a{font-size:.78rem;color:#53645a;padding:.55rem .85rem}
+nav a.on,nav a:hover{background:var(--teal);color:white}
+.hero3{background:linear-gradient(112deg,#102b24,#173f32 55%,#284e37);color:#f8f7ef;min-height:620px}
+.hero3 .in{max-width:1320px;min-height:620px;padding:5.5rem 1.5rem;align-items:center}
+.hero3 .copy{max-width:590px;text-align:left;margin-left:auto;position:relative;z-index:2}
+.hero3 .copy .mono{color:var(--lime);letter-spacing:.18em}
+.hero3 .copy h1{font:500 clamp(2.8rem,5.3vw,5rem)/1.02 'Newsreader',Georgia,serif;letter-spacing:-.04em;color:#fffdf5;margin:1.1rem 0 1.5rem}
+.hero3 .copy h1 b{color:var(--lime);font-weight:500}
+.hero3 .copy p{color:#e0e9df;font-size:1rem;line-height:1.85;border-color:var(--gold);padding-left:1.2rem}
+.hero3:after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,#102b2410 0%,#102b2440 42%,#102b24e8 75%,#102b24 100%)}
+.mapart{opacity:.78;mix-blend-mode:normal;filter:saturate(.72) contrast(1.05);mask-image:linear-gradient(90deg,#000 0%,#000 68%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 68%,transparent 100%)}
+.wrap{max-width:1320px}
+.view#v-home>.wrap{padding-top:3rem}
+.view#v-home>.wrap>.mono{color:#526b55}
+.grid{grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:1rem}
+.tile{position:relative;min-height:155px;background:#fffefa;border:1px solid var(--line);border-radius:5px;padding:1.4rem;box-shadow:0 8px 26px #20352608;transition:transform .25s,border-color .25s,box-shadow .25s}
+.tile:before{content:'';position:absolute;left:0;top:18px;bottom:18px;width:2px;background:var(--gold)}
+.tile:hover{transform:translateY(-4px);border-color:#9eaf98;box-shadow:0 18px 38px #20352612}
+.tile i{font:500 1.45rem/1.15 'Newsreader',Georgia,serif;color:#1d3d2c;margin-bottom:.65rem}
+.tile span{font-size:.88rem;line-height:1.6;color:#69766b}
+.mapsec{grid-template-columns:minmax(0,1fr) 370px;min-height:600px;border-radius:7px;box-shadow:0 24px 60px #14291c1a;margin:3.5rem 0 2rem}
+#map{min-height:600px}
+.side{background:linear-gradient(160deg,#183c30,#102b24);padding:1.7rem;max-height:760px}
+.side h2{font:500 2.4rem/1.05 'Newsreader',Georgia,serif}
+.side .mono{color:#c9d9b5}
+.row{border-color:#ffffff1c;color:#b4c7b7;padding:.6rem 0}.row b{color:#f6f5ec}
+.stat{border-radius:5px;background:#ffffff0b;border-color:#ffffff20;padding:.9rem}.stat b{font:500 1.9rem 'Newsreader',Georgia,serif;color:#e5edda}.stat span{color:#b3c6b7}
+.note{background:#3a3421;border-color:#76633c;color:#ead9ad;line-height:1.6}
+.sp{border-radius:4px;background:#ffffff09;border-color:#ffffff20;padding:.7rem .8rem}.sp:hover{border-color:#c9d9b5;background:#ffffff12}.sp i{font:italic 500 1.08rem 'Newsreader',Georgia,serif}.sp small{color:#b4c7b7}
+.munis button{border-radius:3px;padding:.55rem .9rem;font-size:.8rem;color:#405548}.munis button.on,.munis button:hover{background:var(--teal);border-color:var(--teal);color:white}
+h2.t{font:500 clamp(2.2rem,4vw,3.2rem)/1.1 'Newsreader',Georgia,serif;letter-spacing:-.035em;color:#1c392a}
+.box{background:#fffefa;border:1px solid var(--line);border-radius:5px;padding:1.35rem;box-shadow:0 8px 24px #20352606}.box h3{color:#52704f;letter-spacing:.17em}
+.tabs button.on{color:#244b34;border-color:var(--gold)}
+#fc{border-radius:7px}#fc .go,.go{background:var(--teal);border-radius:3px}
+.warn{max-width:1320px;color:#6b766b;font-size:.78rem;line-height:1.8;border-top:1px solid var(--line)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(max-width:900px){.hero3,.hero3 .in{min-height:570px}.hero3 .in{padding:4rem 1.5rem}.hero3 .copy{max-width:560px}.mapart{left:50%;margin-left:-50vw;width:100vw;height:auto;opacity:.25;mask-image:linear-gradient(180deg,#000 0%,#000 50%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 50%,transparent 100%)}.hero3:after{background:linear-gradient(90deg,#102b2480,#102b24d9)}.mapsec{grid-template-columns:1fr}#map{min-height:460px}.side{max-height:none;border-top:1px solid #ffffff20}}
+@media(max-width:620px){.pilot{font-size:.58rem}.nav{padding:.65rem 1rem;min-height:68px}.hero3,.hero3 .in{min-height:600px}.hero3 .in{padding:3.2rem 1rem}.hero3 .copy h1{font-size:clamp(2.65rem,13vw,4rem)}.hero3 .copy p{font-size:.94rem}.grid{grid-template-columns:1fr;gap:.8rem}.tile{min-height:135px}.mapsec{margin:2.5rem 0 1.5rem}#map{min-height:390px}.side{padding:1.2rem}}
