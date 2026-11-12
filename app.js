@@ -492,57 +492,46 @@ function mostrarUsos(sel){
 /* =====================================================================
    CONEXÃO: conjuntos paralelos espécie → molécula → classe → atividade
    ===================================================================== */
-let filtroCx = 'todos';
+let filtroCx = 'todos', fixoCx = null;
 function desenharConexao(){
   const opcoes = [['todos', 'Tudo'], ['animais', 'Animais peçonhentos'], ['plantas', 'Plantas medicinais'], ['fungos', 'Fungos']].filter(([k]) => k === 'todos' || E.some(e => e.tipo === k));
-  $('#cx-ctrl').innerHTML = opcoes.map(([k, t]) => `<button type="button" data-cx="${k}" aria-pressed="${k === filtroCx}">${t}</button>`).join('') + '<span class="dica-txt">Toque duas vezes em uma espécie para abrir a ficha.</span>';
-  const regs = R.filter(r => filtroCx === 'todos' || r.esp.tipo === filtroCx);
-  const svg = $('#cx');
-  if (!regs.length){ svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 1000 60'); $('#cx-detalhe').textContent = 'Nenhum registro neste grupo.'; return; }
-  const COLS = [['esp', 'Espécie', r => r.esp.nome_cientifico], ['mol', 'Molécula', r => r.molecula], ['cla', 'Classe', r => r.classe || 'classe não informada'], ['atv', 'Atividade', r => r.atividade]];
-  const PASSO = 30, TOPO = 46, X = [24, 280, 536, 792];
-  // nós por coluna
-  const nos = COLS.map(([k], ci) => { const mapa_ = new Map(); regs.forEach(r => { const v = COLS[ci][2](r); if (!mapa_.has(v)) mapa_.set(v, {k, ci, v, regs:[]}); mapa_.get(v).regs.push(r); }); return [...mapa_.values()]; });
-  nos[0].sort((a, b) => a.v.localeCompare(b.v));
-  // ordena as colunas seguintes pelo baricentro da anterior para reduzir cruzamentos
-  for (let ci = 1; ci < 4; ci++){
-    const pos = new Map(nos[ci - 1].map((n, i) => [n.v, i]));
-    nos[ci].forEach(n => { n.b = n.regs.reduce((s, r) => s + pos.get(COLS[ci - 1][2](r)), 0) / n.regs.length; });
-    nos[ci].sort((a, b) => a.b - b.b || a.v.localeCompare(b.v));
-  }
-  const maxN = Math.max(...nos.map(c => c.length)), H = TOPO + maxN * PASSO + 16;
-  nos.forEach((col, ci) => { const off = (maxN - col.length) * PASSO / 2; col.forEach((n, i) => { n.x = X[ci]; n.y = TOPO + off + i * PASSO + PASSO / 2; }); });
-  const idx = nos.map(col => new Map(col.map(n => [n.v, n])));
-  const corta = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
-  // As linhas saem do fim de cada rótulo (medido depois de desenhar) até o ponto seguinte.
-  const caminhos = () => { let lig = '';
-    regs.forEach((r, ri) => { for (let ci = 0; ci < 3; ci++){
-      const a = idx[ci].get(COLS[ci][2](r)), b = idx[ci + 1].get(COLS[ci + 1][2](r));
-      const x0 = a.x + (a.w || 0), x1 = b.x - 6, mx = (x0 + x1) / 2;
-      lig += `<path class="lig" data-r="${ri}" d="M${x0},${a.y} C${mx},${a.y} ${mx},${b.y} ${x1},${b.y}"/>`; } });
-    return lig; };
-  let txt = COLS.map(([, t], ci) => `<text class="cab" x="${X[ci] - 6}" y="22">${t}</text>`).join('');
-  nos.forEach(col => col.forEach(n => {
-    const rs = n.regs.map(r => regs.indexOf(r)).join(' ');
-    txt += `<g class="no ${n.k}" tabindex="0" role="button" data-rs="${rs}" data-v="${es(n.v)}" data-ci="${n.ci}"${n.k === 'esp' ? ` data-id="${es(n.regs[0].esp.id)}"` : ''} transform="translate(${n.x},${n.y})">
-      <title>${es(n.v)}</title><circle r="5"/><text x="11" y="4.5">${es(corta(n.v, n.k === 'esp' ? 30 : 31))}</text></g>`;
-  }));
-  svg.setAttribute('viewBox', `0 0 1040 ${H}`);
-  svg.innerHTML = '<g id="cx-lig"></g>' + txt;
-  $$('#cx .no').forEach(g => { const n = idx[+g.dataset.ci].get(g.dataset.v); try { n.w = 11 + g.querySelector('text').getComputedTextLength() + 6; } catch (_) { n.w = 8; } });
-  $('#cx-lig').innerHTML = caminhos();
-  $('#cx-detalhe').textContent = `${nRegistros(regs.length)}, ${nEspecies(nos[0].length)}, ${nos[1].length} moléculas, ${nos[2].length} classes e ${nos[3].length} atividades.`;
-  svg._regs = regs;
+  $('#cx-ctrl').innerHTML = opcoes.map(([k, t]) => `<button type="button" data-cx="${k}" aria-pressed="${k === filtroCx}">${t}</button>`).join('');
+  const grupos = E.filter(e => e.reg.length && (filtroCx === 'todos' || e.tipo === filtroCx));
+  const cx = $('#cx'); fixoCx = null; cx.classList.remove('foco'); R.forEach(r => { delete r._cx; });
+  if (!grupos.length){ cx.innerHTML = ''; $('#cx-detalhe').textContent = 'Nenhum registro neste grupo.'; return; }
+  const cla = r => r.classe || 'classe não informada';
+  let h = ['Espécie', 'Molécula', 'Classe', 'Atividade'].map(t => `<div class="cab" role="columnheader">${t}</div>`).join('');
+  let ri = 0, primeiro = true;
+  grupos.forEach(e => {
+    const regs = [...e.reg].sort((a, b) => a.molecula.localeCompare(b.molecula));
+    const n = regs.length, ini = primeiro ? ' primeiro' : ' ini'; primeiro = false;
+    h += `<div class="cel esp${n > 1 ? ' multi' : ''}${ini}" style="grid-row:span ${n}" data-e="${es(e.id)}" role="rowheader"><a href="#especie/${es(e.id)}"><span class="bin">${es(e.nome_cientifico)}</span><small>${es(e.nome_popular || GRUPOS[e.tipo].sing)}</small></a></div>`;
+    regs.forEach((r, k) => {
+      const c = k === 0 ? ini : '';
+      h += `<div class="cel mol${c}" data-r="${ri}"><span class="it">${es(r.molecula)}</span></div>`
+        + `<div class="cel${c}" data-r="${ri}"><button type="button" class="it" data-k="cla" data-v="${es(cla(r))}">${es(cla(r))}</button></div>`
+        + `<div class="cel${c}" data-r="${ri}"><button type="button" class="it" data-k="atv" data-v="${es(r.atividade)}">${es(r.atividade)}</button></div>`;
+      r._cx = ri++;
+    });
+  });
+  cx.innerHTML = h;
+  cx._regs = R.filter(r => r._cx != null && grupos.includes(r.esp));
+  const nCla = new Set(cx._regs.map(cla)).size, nAtv = new Set(cx._regs.map(r => r.atividade)).size;
+  $('#cx-detalhe').textContent = `${nRegistros(cx._regs.length)} em ${nEspecies(grupos.length)}, com ${nCla} ${nCla === 1 ? 'classe' : 'classes'} e ${nAtv} ${nAtv === 1 ? 'atividade' : 'atividades'}.`;
+  cx._resumo = $('#cx-detalhe').textContent;
 }
-function focarNo(g){
-  const svg = $('#cx'), regs = svg._regs; if (!g){ svg.classList.remove('foco'); $$('#cx .on').forEach(x => x.classList.remove('on')); return; }
-  const set = new Set(g.dataset.rs.split(' ').map(Number));
-  svg.classList.add('foco');
-  $$('#cx .lig').forEach(p => p.classList.toggle('on', set.has(+p.dataset.r)));
-  const vals = new Set(); set.forEach(i => { const r = regs[i]; vals.add('0|' + r.esp.nome_cientifico); vals.add('1|' + r.molecula); vals.add('2|' + (r.classe || 'classe não informada')); vals.add('3|' + r.atividade); });
-  $$('#cx .no').forEach(n => n.classList.toggle('on', vals.has(n.dataset.ci + '|' + n.dataset.v)));
-  const esp = [...new Set([...set].map(i => regs[i].esp.nome_cientifico))];
-  $('#cx-detalhe').innerHTML = `<b style="color:var(--tinta)">${es(g.dataset.v)}</b>: ${nRegistros(set.size)} ${esp.length > 1 || +g.dataset.ci !== 0 ? `em ${esp.map(n => `<span class="bin">${es(n)}</span>`).join(', ')}` : ''}${+g.dataset.ci === 0 ? ` <a href="#especie/${es(g.dataset.id)}">Abrir ficha</a>` : ''}`;
+function focarNo(b){
+  const cx = $('#cx');
+  $$('#cx .on, #cx .ativo').forEach(x => x.classList.remove('on', 'ativo'));
+  if (!b){ cx.classList.remove('foco'); $('#cx-detalhe').textContent = cx._resumo || ''; return; }
+  const k = b.dataset.k, v = b.dataset.v, cla = r => r.classe || 'classe não informada';
+  const regs = cx._regs.filter(r => (k === 'cla' ? cla(r) : r.atividade) === v);
+  const linhas = new Set(regs.map(r => String(r._cx))), esp = [...new Set(regs.map(r => r.esp))];
+  cx.classList.add('foco');
+  $$('#cx .cel[data-r]').forEach(c => c.classList.toggle('on', linhas.has(c.dataset.r)));
+  $$('#cx .cel.esp').forEach(c => c.classList.toggle('on', esp.some(e => e.id === c.dataset.e)));
+  $$('#cx .it[data-k]').forEach(x => x.classList.toggle('ativo', x.dataset.k === k && x.dataset.v === v));
+  $('#cx-detalhe').innerHTML = `<b style="color:var(--tinta)">${es(v)}</b> aparece em ${nRegistros(regs.length)} de ${nEspecies(esp.length)}: ${esp.map(e => `<a href="#especie/${es(e.id)}" class="bin">${es(e.nome_cientifico)}</a>`).join(', ')}. <button type="button" class="botao" data-acao="limpar-cx" style="margin-left:.4rem;padding:.25rem .6rem">Mostrar tudo</button>`;
 }
 
 /* =====================================================================
@@ -739,17 +728,15 @@ function ligarEventos(){
     else if (t.dataset.baixar) exportar(t.dataset.baixar);
     else if (t.dataset.cx){ filtroCx = t.dataset.cx; desenharConexao(); }
     else if (t.dataset.acao === 'roraima') escolherMun(null);
+    else if (t.dataset.acao === 'limpar-cx'){ fixoCx = null; focarNo(null); }
   });
   $$('form[data-busca]').forEach(f => f.addEventListener('submit', ev => { ev.preventDefault(); const q = f.q.value.trim(); location.hash = '#busca/' + encodeURIComponent(q); }));
   $('#q-busca').addEventListener('input', ev => { const q = ev.target.value; history.replaceState(null, '', '#busca/' + encodeURIComponent(q)); buscar(q); });
-  // conexão: passar o cursor, focar com teclado, tocar
+  // conexão: tocar fixa o destaque; passar o cursor mostra uma prévia
   const cx = $('#cx');
-  cx.addEventListener('mouseover', ev => { const g = ev.target.closest('.no'); if (g) focarNo(g); });
-  cx.addEventListener('mouseleave', () => focarNo(null));
-  cx.addEventListener('focusin', ev => { const g = ev.target.closest('.no'); if (g) focarNo(g); });
-  cx.addEventListener('click', ev => { const g = ev.target.closest('.no'); if (g) focarNo(g); else focarNo(null); });
-  cx.addEventListener('dblclick', ev => { const g = ev.target.closest('.no.esp'); if (g) location.hash = '#especie/' + g.dataset.id; });
-  cx.addEventListener('keydown', ev => { const g = ev.target.closest('.no.esp'); if (g && ev.key === 'Enter') location.hash = '#especie/' + g.dataset.id; });
+  cx.addEventListener('click', ev => { const b = ev.target.closest('.it[data-k]'); if (!b) return; fixoCx = fixoCx === b.dataset.k + '|' + b.dataset.v ? null : b.dataset.k + '|' + b.dataset.v; focarNo(fixoCx ? b : null); });
+  cx.addEventListener('mouseover', ev => { if (fixoCx) return; const b = ev.target.closest('.it[data-k]'); if (b) focarNo(b); });
+  cx.addEventListener('mouseleave', () => { if (!fixoCx) focarNo(null); });
   $('#cita-fechar').onclick = () => $('#dlg-cita').close();
   $('#cita-copiar').onclick = async () => { const t = $('#cita-txt').textContent; try { await navigator.clipboard.writeText(t); toast('Citação copiada'); } catch (_) { toast('Selecione o texto e copie'); } };
   $('#dlg-cita').addEventListener('click', ev => { if (ev.target === ev.currentTarget) ev.currentTarget.close(); });

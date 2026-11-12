@@ -277,21 +277,30 @@ main{min-height:70vh}
 .cx-ctrl button{border:1px solid var(--linha);background:var(--superficie);border-radius:var(--raio);padding:.4rem .8rem;font-size:.9rem}
 .cx-ctrl button[aria-pressed="true"]{background:var(--acao);color:var(--acao-txt);border-color:var(--acao)}
 .cx-ctrl .dica-txt{color:var(--mudo);font-size:.88rem;margin-left:auto}
-.cx-quadro{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--linha);border-bottom:1px solid var(--linha);margin-bottom:1rem}
-#cx{display:block;min-width:960px;width:100%;height:auto}
-#cx .cab{font:500 13px var(--sans);fill:var(--mudo)}
-#cx .lig{fill:none;stroke:var(--linha-forte);stroke-width:1.3;transition:stroke .15s,opacity .15s}
-#cx .no circle{fill:var(--superficie);stroke:var(--tinta);stroke-width:1.4}
-#cx .no text{font:13px var(--sans);fill:var(--tinta);paint-order:stroke;stroke:var(--papel);stroke-width:4px;stroke-linejoin:round}
-#cx .no.esp text{font:italic 500 13.5px var(--titulo)}
-#cx .no{cursor:pointer;outline:none}
-#cx.foco .lig{opacity:.18}
-#cx.foco .no{opacity:.3}
-#cx.foco .lig.on{opacity:1;stroke:var(--ocre);stroke-width:2.2}
-#cx.foco .no.on{opacity:1}
-#cx.foco .no.on circle{fill:var(--ocre);stroke:var(--ocre)}
-#cx .no:focus-visible circle{stroke:var(--ocre);stroke-width:3}
-.cx-detalhe{min-height:3.2rem;font-size:.95rem;color:var(--mudo);margin-bottom:3rem}
+.cx-quadro{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:1rem}
+/* Formato de chave: espécie à esquerda, um registro por linha, ligações retas sem cruzamento */
+#cx{display:grid;grid-template-columns:minmax(200px,1.15fr) repeat(3,minmax(160px,1fr));column-gap:34px;min-width:820px}
+#cx .cab{font:500 .82rem var(--sans);color:var(--mudo);padding:0 0 .6rem;border-bottom:1px solid var(--linha-forte)}
+#cx .cel{position:relative;display:flex;align-items:center;min-height:2.9rem;padding:.35rem 0}
+#cx .ini{border-top:1px solid var(--linha)}
+#cx .primeiro{border-top:0}
+#cx .cel.esp{align-items:flex-start;padding-top:.75rem;padding-right:.4rem}
+#cx .cel.esp a{text-decoration:none;color:var(--tinta);display:block}
+#cx .cel.esp a:hover .bin{text-decoration:underline;text-underline-offset:.15em;text-decoration-thickness:1px}
+#cx .cel.esp small{display:block;font-size:.84rem;color:var(--mudo);margin-top:.1rem}
+#cx .cel.esp .bin{font-size:1rem}
+#cx .cel.esp.multi::after{content:"";position:absolute;right:-17px;top:1.45rem;bottom:1.45rem;border-right:1px solid var(--linha-forte)}
+#cx .cel:not(.esp):not(.cab)::before{content:"";position:absolute;left:-34px;width:28px;top:50%;border-top:1px solid var(--linha-forte)}
+#cx .cel.mol::before{left:-17px;width:11px}
+#cx .it{display:inline-block;border:1px solid var(--linha);background:var(--superficie);border-radius:4px;padding:.28rem .55rem;font-size:.9rem;line-height:1.35;cursor:pointer;text-align:left}
+#cx .it:hover{border-color:var(--linha-forte)}
+#cx .mol .it{border-color:transparent;background:none;padding-left:0;cursor:default;font-weight:500}
+#cx.foco .cel:not(.cab){opacity:.28;transition:opacity .15s}
+#cx.foco .cel.on{opacity:1}
+#cx.foco .cel.on::before,#cx.foco .cel.on::after{border-color:var(--ocre)}
+#cx .it.ativo{background:var(--ocre-fundo);border-color:var(--ocre);color:var(--tinta)}
+.cx-detalhe{min-height:2.4rem;font-size:.95rem;color:var(--mudo);margin:0 0 .8rem}
+.cx-quadro{margin-bottom:4rem}
 
 /* Busca */
 .busca-grande{display:flex;gap:.5rem;max-width:680px}
@@ -412,10 +421,10 @@ footer p{max-width:70ch}
 
   <!-- Conexão -->
   <section class="visao" id="v-conexao"><div class="wrap">
-    <div class="cab-visao"><h1>Conexão</h1><p class="leve">Cada linha liga uma espécie à molécula descrita, à classe química dessa molécula e à atividade observada. Passe o cursor ou toque em um item para seguir seus caminhos.</p></div>
+    <div class="cab-visao"><h1>Conexão</h1><p class="leve">Cada linha liga uma espécie à molécula descrita, à classe química dessa molécula e à atividade observada. Toque em uma classe ou atividade para ver todas as espécies em que ela aparece.</p></div>
     <div class="cx-ctrl" id="cx-ctrl"></div>
-    <div class="cx-quadro"><svg id="cx" role="img" aria-label="Diagrama de conexões entre espécie, molécula, classe e atividade"></svg></div>
     <div class="cx-detalhe" id="cx-detalhe" aria-live="polite"></div>
+    <div class="cx-quadro"><div id="cx" role="table" aria-label="Conexões entre espécie, molécula, classe e atividade"></div></div>
   </div></section>
 
   <!-- Busca -->
