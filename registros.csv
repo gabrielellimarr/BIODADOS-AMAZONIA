@@ -1,0 +1,13 @@
+id,especie_id,molecula,molecula_id,classe,atividade,tipo_estudo,metodo,grau,referencia,doi,ano,municipio_ibge,latitude,longitude,voucher,responsavel,data_registro
+R001,crotalus-durissus,Convulxina,,lectina tipo C,ativação do inflamassoma NLRP3,,não transcrito,,Scientific Reports,,2022,,,,,,
+R002,anacardium-humile,Ácido gálico,,ácido fenólico,inibição de fosfolipase A2 miotóxica,,não transcrito,,International Journal of Biological Macromolecules,,2021,,,,,,
+R003,bothrops-moojeni,Peptídeo derivado de metaloprotease,,peptídeo sintético,inibição de nucleosídeo fosforilase de Plasmodium falciparum,,não transcrito,,Biochimie,,2019,,,,,,
+R004,bothrops-atrox,Peptídeos derivados de inibidor de PLA2 gama,,peptídeo sintético,atividade antimiotóxica,,não transcrito,,Current Topics in Medicinal Chemistry,,2019,,,,,,
+R005,bothrops-mattogrossensis,Fosfolipase A2 ácida,,enzima,caracterização bioquímica e funcional,,não transcrito,,International Journal of Biological Macromolecules,,2025,,,,,,
+R006,bothrops-brazili,BbMP-1,,metaloproteinase,caracterização funcional,,não transcrito,,Universidade Federal de Rondônia,,2013,,,,,,
+R007,combretum-leprosum,Triterpeno lupano,,triterpeno,atividade biológica documentada,,não transcrito,,literatura de produtos naturais,,2016,,,,,,
+R008,tabernaemontana-catharinensis,Peroxidases isoenzimas,,enzima,atividade antifúngica,,não transcrito,,Phytochemistry,,2025,,,,,,
+R009,micrurus-lemniscatus,Componentes de peçonha,,proteína,caracterização de peçonha,,não transcrito,,literatura de toxinologia amazônica,,2020,,,,,,
+R010,aristolochia-sprucei,Composto bioativo de extrato aquoso,,não determinada,atividade antimiotóxica,,não transcrito,,Toxicon: X,,2020,,,,,,
+R011,crotalus-durissus,Crotoxina,crotoxina,fosfolipase A2 heterodimérica,bloqueio da liberação de acetilcolina,in vivo,ensaio em preparação nervo-músculo (exemplo),B,Registro de demonstração (fictício),,2024,1400100,2.82,-60.67,,Equipe do projeto (teste),2026-11-12
+R012,bothrops-atrox,Fosfolipase A2 básica,,enzima,atividade miotóxica,in vitro,ensaio em cultura de mioblastos (exemplo),A,Registro de demonstração (fictício),,2023,1400209,,,,Equipe do projeto (teste),2026-11-12
