@@ -1,24 +1,57 @@
 # Bio Dados Amazônia
 
-> **Projeto piloto.** Protótipo de um projeto científico próprio. As imagens definitivas serão coletadas com autorização; os espaços de imagem atuais são provisórios.
+> **Projeto piloto.** Os dados atuais são fictícios e servem apenas para teste. As imagens definitivas serão coletadas com autorização.
 
-Banco de dados digital interativo para integrar, organizar, armazenar e consultar informações científicas sobre **animais peçonhentos** e **plantas medicinais** da Amazônia, com foco no estado de **Roraima**. O objetivo é subsidiar pesquisas, fortalecer a gestão do conhecimento e apoiar a produção científica.
+Banco de dados digital para integrar, organizar e consultar informações científicas sobre **animais peçonhentos**, **plantas medicinais** e **fungos** de **Roraima**: cada espécie ligada às moléculas, classes químicas e atividades biológicas descritas na literatura.
+
+## Estrutura
+
+```
+index.html          página, estilos e uma cópia embutida dos dados (reserva)
+app.js              lógica do site; no topo ficam os endereços das tabelas
+dados/
+  especies.csv      uma linha por espécie
+  moleculas.csv     uma linha por molécula com ficha própria (opcional)
+  registros.csv     uma linha por evidência: espécie + molécula + atividade + fonte
+imagens/            fotos e figuras (sempre com crédito e licença)
+```
 
 ## O que o site oferece
 
-- Mapa interativo dos 15 municípios de Roraima, com seleção por clique ou por lista.
-- Painel territorial com código IBGE, área, população e densidade demográfica.
-- Card flutuante por espécie, com expansão para a página de detalhe.
-- Abas: Animais peçonhentos, Plantas medicinais, Fungos, Usos, Conexão e Autoria.
-- Interface responsiva, com navegação por teclado e respeito à preferência de movimento reduzido.
+- Ficha por espécie no formato de etiqueta de coleção, com taxonomia, descrição, todos os compostos registrados, grau de evidência, referência com DOI e links para PDB, UniProt e PubChem.
+- Distribuição em Roraima: municípios com registro na base e ocorrências do GBIF consultadas em tempo real, filtradas pelos limites do IBGE e contadas por município.
+- Estrutura 3D da molécula em destaque (quando houver código PDB).
+- Diagrama de conexão espécie → molécula → classe → atividade, com destaque dos caminhos.
+- Busca única por espécie, nome popular, molécula, classe ou atividade.
+- Mapa dos 15 municípios com dados do Censo 2022.
+- Citação ABNT pronta por ficha e exportação dos registros em CSV.
+- Página **Contribuir** com guia, dicionário de dados e lista automática de pendências (sem DOI, sem grau, sem foto etc.).
+- Modo claro e escuro, navegação por teclado, respeito a movimento reduzido.
 
-## Como usar
+## Como alimentar a base
 
-O site é um único arquivo estático.
+1. Edite as três tabelas da pasta `dados` (ou uma planilha Google com três abas de mesmo nome).
+2. Um registro por evidência: três moléculas da mesma espécie são três linhas em `registros.csv`.
+3. Valide o nome científico (Reflora para plantas e fungos, Reptile Database para serpentes) e atribua o grau A, B ou C.
+4. Publique:
+   - **Arquivos:** substitua os CSV da pasta `dados` no GitHub. O site lê os novos dados automaticamente.
+   - **Planilha Google:** Arquivo → Compartilhar → Publicar na Web, publique cada aba como CSV e cole os três links em `FONTES`, no início do `app.js`.
 
-1. Abra `index.html` no navegador, com conexão à internet (mapa e fontes são carregados online).
-2. Para publicar, use o GitHub Pages: **Settings → Pages → Deploy from a branch → `main` / root**.
-3. Para trocar a logo, coloque um arquivo `logo.png` na mesma pasta de `index.html`.
+O Excel em português salva CSV com ponto e vírgula; o site aceita os dois formatos. Salve sempre em UTF-8.
+
+O dicionário completo de colunas está na página **Contribuir** do site.
+
+## Publicação
+
+GitHub Pages: **Settings → Pages → Deploy from a branch → `main` / root**.
+
+Ao abrir o `index.html` direto do computador, o navegador bloqueia a leitura dos CSV e o site usa a cópia embutida. Para testar localmente com os CSV, rode `python3 -m http.server` na pasta e abra `http://localhost:8000`.
+
+## Graus de evidência
+
+- **A:** literatura revisada por pares, evidência robusta.
+- **B:** indicado na literatura, evidência preliminar.
+- **C:** conhecimento popular ou tradicional.
 
 ## Fontes de dados
 
@@ -26,21 +59,17 @@ O site é um único arquivo estático.
 |---|---|
 | Limites municipais | IBGE, API de Malhas v3 (UF 14) |
 | Área e população | IBGE, Censo 2022 (SIDRA, tabela 4714) |
-| Ocorrências das espécies | GBIF (valores nacionais, não municipais) |
-| Moléculas, classes e atividades | Base própria do projeto (CSV) e referências citadas em cada espécie |
-| Imagem de satélite | Sentinel-2 cloudless © EOX, contém dados Copernicus Sentinel 2020, CC BY-NC-SA 4.0 |
+| Ocorrências | GBIF.org, consulta em tempo real |
+| Estruturas 3D | RCSB Protein Data Bank |
+| Moléculas, classes e atividades | Base própria do projeto, com a referência de cada registro |
+| Imagem de satélite | Sentinel-2 cloudless © EOX, dados Copernicus Sentinel 2020, CC BY-NC-SA 4.0 (uso não comercial) |
 
-## Limitações e critérios
+## Limitações
 
-- A base atual **não contém município nem coordenadas**. Nenhuma espécie é atribuída a município por inferência; registros sem localização municipal são tratados como "localização municipal desconhecida".
-- As barras de ocorrência mostram contagens do GBIF no Brasil, e não registros municipais.
-- Dados inexistentes aparecem como "Dado não disponível". Nada é estimado ou preenchido artificialmente.
-- O nível de evidência (A, B, C) ainda não está classificado na base; o grau atual é "Ø · não classificado".
-  - **A:** literatura revisada por pares, com evidência robusta.
-  - **B:** indicado na literatura, com evidência preliminar.
-  - **C:** conhecimento popular ou tradicional.
-- Uma maior quantidade de registros pode refletir maior esforço de coleta, e não maior abundância biológica.
-- O satélite da EOX é de **uso não comercial**.
+- Nenhuma espécie é atribuída a município por inferência. A base só mostra município quando o registro informa `municipio_ibge`.
+- Ocorrências do GBIF são exibidas à parte e identificadas como tal.
+- Mais registros podem refletir maior esforço de coleta, não maior abundância.
+- Dados ligados a conhecimento tradicional podem exigir cadastro no SisGen (Lei 13.123/2015) antes da publicação.
 
 ## Aviso
 
@@ -48,4 +77,4 @@ Conteúdo informativo e científico. Não substitui orientação médica. O uso 
 
 ## Autoria
 
-Equipe, instituição e forma de citação: a preencher.
+Equipe, instituição, licença e forma de citação: a preencher.
